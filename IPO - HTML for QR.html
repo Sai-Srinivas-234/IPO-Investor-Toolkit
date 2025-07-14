@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPO Prospectus Analysis Quiz & Toolkit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cambria', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 95%;
+            max-width: 1200px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px 0;
+            display: none;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .sidebar.active {
+            display: flex;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .sidebar-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #3498db;
+        }
+
+        .sidebar-item.active {
+            background: rgba(52, 152, 219, 0.2);
+            border-left-color: #3498db;
+        }
+
+        .content-area {
+            flex: 1;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .screen {
+            display: none;
+            padding: 40px;
+            min-height: 400px;
+            animation: fadeIn 0.5s ease-in-out;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .start-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+        }
+
+        .start-screen h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .question-screen h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .question-number {
+            color: #2196F3;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .options {
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .option:hover {
+            border-color: #2196F3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border-color: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+
+        .next-btn:hover {
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            margin: 20px 0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .summary-screen {
+            text-align: center;
+        }
+
+        .summary-screen h2 {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+        }
+
+        .score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .score.poor {
+            color: #f44336;
+        }
+
+        .score.average {
+            color: #ff9800;
+        }
+
+        .score.good {
+            color: #4CAF50;
+        }
+
+        .score.excellent {
+            color: #2196F3;
+        }
+
+        .answers-review {
+            text-align: left;
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .answer-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+
+        .answer-item.correct {
+            border-left-color: #4CAF50;
+        }
+
+        .answer-item.incorrect {
+            border-left-color: #f44336;
+        }
+
+        .answer-question {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .answer-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .correct-answer {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .user-answer {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Toolkit Styles */
+        .toolkit-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .toolkit-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .toolkit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #2196F3;
+        }
+
+        .toolkit-card h3 {
+            color: #2196F3;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .toolkit-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .toolkit-content {
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .toolkit-content h2 {
+            color: #2196F3;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 10px;
+        }
+
+        .toolkit-content h3 {
+            color: #333;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+
+        .toolkit-content h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .toolkit-content ul, .toolkit-content ol {
+            margin: 15px 0 15px 25px;
+        }
+
+        .toolkit-content li {
+            margin-bottom: 8px;
+        }
+
+        .toolkit-content p {
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .green-flag {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .red-flag {
+            background: #ffeaea;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .yellow-flag {
+            background: #fff8e1;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .checklist {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .checklist h4 {
+            color: #2196F3;
+            margin-bottom: 15px;
+        }
+
+        .toolkit-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+            
+            .question-screen h2 {
+                font-size: 1.5em;
+            }
+            
+            .option {
+                padding: 12px 15px;
+            }
+
+            .toolkit-menu {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <h3>Investor's Toolkit</h3>
+            <div class="sidebar-item" onclick="showToolkitSection(0)">Business Model</div>
+            <div class="sidebar-item" onclick="showToolkitSection(1)">Financials</div>
+            <div class="sidebar-item" onclick="showToolkitSection(2)">Risk Factors</div>
+            <div class="sidebar-item" onclick="showToolkitSection(3)">Use of Funds</div>
+            <div class="sidebar-item" onclick="showToolkitSection(4)">Management Team</div>
+            <div class="sidebar-item" onclick="showToolkitSection(5)">Ownership Structure</div>
+            <div class="sidebar-item" onclick="showToolkitSection(6)">Valuation</div>
+            <div class="sidebar-item" onclick="showToolkitSection(7)">Additional Aspects</div>
+            <div class="sidebar-item" onclick="showToolkitSection(8)">Red vs Green Flags</div>
+            <div class="sidebar-item" onclick="showToolkitSection(9)">Decision Framework</div>
+        </div>
+
+        <div class="content-area">
+            <div class="header">
+                <h1>Analyzing IPO Prospectus for Investment Decisions</h1>
+                <p>Test your knowledge on IPO analysis and investment strategies</p>
+            </div>
+
+            <!-- Start Screen -->
+            <div class="screen active" id="start-screen">
+                <div class="start-screen">
+                    <h2>Welcome to the IPO Analysis Quiz</h2>
+                    <p>Test your understanding of IPO prospectus analysis with few simple questions<br>
+                    Each question focuses on key aspects of investment decision-making.</p>
+                    <button class="btn" onclick="startQuiz()">Start Quiz</button>
+                </div>
+            </div>
+
+            <!-- Question Screens -->
+            <div class="screen" id="question-screen">
+                <div class="question-number" id="question-number">Question 1 of 11</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <h2 id="question-text">Question will appear here</h2>
+                <div class="options" id="options-container">
+                    <!-- Options will be populated here -->
+                </div>
+                <div class="navigation">
+                    <button class="nav-btn" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
+                    <button class="nav-btn next-btn" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+
+            <!-- Summary Screen -->
+            <div class="screen" id="summary-screen">
+                <div class="summary-screen">
+                    <h2>Quiz Completed!</h2>
+                    <div class="score" id="final-score">8/11</div>
+                    <div id="score-message">Great job! You have a solid understanding of IPO analysis.</div>
+                    <div class="answers-review" id="answers-review">
+                        <!-- Detailed answers will appear here -->
+                    </div>
+                    <button class="btn restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+                    <button class="btn secondary" onclick="showToolkitMenu()">Proceed to Investor's Toolkit</button>
+                </div>
+            </div>
+
+            <!-- Toolkit Menu Screen -->
+            <div class="screen" id="toolkit-menu-screen">
+                <h2 style="text-align: center; color: #333; margin-bottom: 30px;">IPO Investor's Toolkit</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 40px;">Click on any section below to learn about that aspect of IPO analysis</p>
+                <div class="toolkit-menu">
+                    <div class="toolkit-card" onclick="showToolkitSection(0)">
+                        <h3>🏢 Business Model</h3>
+                        <p>Understanding how the company makes money and creates value for customers and shareholders.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(1)">
+                        <h3>💰 Financials</h3>
+                        <p>Analyzing revenue, profitability, cash flow, and debt to assess financial health.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(2)">
+                        <h3>⚠️ Risk Factors</h3>
+                        <p>Identifying and evaluating potential risks that could impact the investment.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(3)">
+                        <h3>💸 Use of Funds</h3>
+                        <p>Understanding how the company plans to use the money raised from the IPO.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(4)">
+                        <h3>👥 Management Team</h3>
+                        <p>Evaluating the leadership team's experience, track record, and alignment with shareholders.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(5)">
+                        <h3>📊 Ownership Structure</h3>
+                        <p>Understanding who owns the company before and after the IPO and their level of commitment.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(6)">
+                        <h3>🏷️ Valuation</h3>
+                        <p>Determining if the company is priced fairly compared to its peers and growth prospects.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(7)">
+                        <h3>🔍 Additional Aspects</h3>
+                        <p>Other critical factors like competitive landscape, industry trends, and corporate governance.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(8)">
+                        <h3>🚩 Red vs Green Flags</h3>
+                        <p>Quick reference guide to identify warning signs and positive indicators in IPO prospectus.</p>
+                    </div>
+                    <div class="toolkit-card" onclick="showToolkitSection(9)">
+                        <h3>✅ Decision Framework</h3>
+                        <p>Step-by-step process and checklist for making informed IPO investment decisions.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="backToQuizResults()">Back to Quiz Results</button>
+                </div>
+            </div>
+
+            <!-- Toolkit Content Screens -->
+            <div class="screen" id="toolkit-content-screen">
+                <div class="toolkit-content" id="toolkit-content">
+                    <!-- Toolkit content will be loaded here -->
+                </div>
+                <div class="toolkit-navigation">
+                    <button class="nav-btn" onclick="showToolkitMenu()">Back to Menu</button>
+                    <div>
+                        <button class="nav-btn" id="toolkit-prev" onclick="previousToolkitSection()">Previous</button>
+                        <button class="nav-btn next-btn" id="toolkit-next" onclick="nextToolkitSection()">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Designed for R.A.I.D - National Conference Bhubaneswar</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the preliminary prospectus in an IPO process called?",
+                options: ["Shelf Prospectus", "Red Herring Prospectus", "Deemed prospectus", "Abridged Prospectus"],
+                correct: 1
+            },
+            {
+                question: "Which of these is NOT a reason for a company to go public?",
+                options: ["Raise capital", "Get ISO certification", "Increase visibility and go global", "Offer exit to early investors"],
+                correct: 1
+            },
+            {
+                question: "Which section reveals if a company is profitable?",
+                options: ["Risk Factors", "Financial Information", "Company History", "Board Resolutions"],
+                correct: 1
+            },
+            {
+                question: "Which of the following could be a green flag?",
+                options: ["Use of funds: general purposes", "Promoter reducing stake to 5%", "Consistent profit for 3+ years", "No mention of competition"],
+                correct: 2
+            },
+            {
+                question: "Which IPO was described as 'Monopoly + Government Backing' in my presentation?",
+                options: ["Nykaa", "Zomato", "Paytm", "IRCTC"],
+                correct: 3
+            },
+            {
+                question: "Reading a prospectus is like:",
+                options: ["Scrolling memes", "Reading a biodata before arranged marriage", "Watching IPL highlights", "Reading story book"],
+                correct: 1
+            },
+            {
+                question: "IPO use of funds = Promoter buys a luxury car.",
+                options: ["Swipe Left", "Swipe Right", "Hold position", "Apply with double lot"],
+                correct: 0
+            },
+            {
+                question: "Valuation = 100x earnings. Risk section = vague.",
+                options: ["Swipe Left", "Swipe Right", "Can't say", "Call your cousin and invest"],
+                correct: 0
+            },
+            {
+                question: "DRHP shows revenue growth, healthy margins, and low debt.",
+                options: ["Red Flag", "Green Flag", "Neutral Signal", "Requires more analysis"],
+                correct: 1
+            },
+            {
+                question: "IPO prospectus shows promoter exiting 70% of stake.",
+                options: ["Negative signal", "Neutral", "Very positive", "Depends on company"],
+                correct: 0
+            }
+        ];
+
+        const toolkitSections = [
+            {
+                title: "Business Model",
+                content: `
+                <h2>Business Model</h2>
+                
+                <h3>What is it?</h3>
+                <p>Think of the business model as the company's "recipe for making money." Just like a restaurant needs to know whether it will serve fast food or fine dining, a company needs to explain how it creates value for its customers, shareholders and generates revenue.</p>
+
+                <h3>Why it matters for investors:</h3>
+                <ul>
+                    <li><strong>Sustainability:</strong> Can this business model work for the next 10-20 years?</li>
+                    <li><strong>Scalability:</strong> Can the company grow without proportionally increasing costs?</li>
+                    <li><strong>Competition:</strong> How easy is it for others to copy this model?</li>
+                </ul>
+
+                <h3>What to look for:</h3>
+
+                <div class="green-flag">
+                    <h4>🟢 Green Flags:</h4>
+                    <ul>
+                        <li><strong>Clear revenue streams:</strong> Company explains exactly how it makes money</li>
+                        <li><strong>Recurring revenue:</strong> Subscription-based or repeat customers (like Netflix or grocery stores)</li>
+                        <li><strong>Network effects:</strong> Business gets stronger as more people use it (like WhatsApp or Facebook)</li>
+                        <li><strong>High switching costs:</strong> Customers find it difficult to move to competitors</li>
+                        <li><strong>Scalable model:</strong> Can serve more customers without doubling costs</li>
+                    </ul>
+                </div>
+
+                <div class="red-flag">
+                    <h4>🔴 Red Flags:</h4>
+                    <ul>
+                        <li><strong>Complex or unclear model:</strong> If you can't understand how they make money, be cautious</li>
+                        <li><strong>Dependence on few customers:</strong> More than 20% revenue from single customer</li>
+                        <li><strong>Declining industry:</strong> Investing in a growing industry is easier</li>
+                        <li><strong>Easy to replicate:</strong> No competitive advantage or barriers to entry</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>Real Examples:</h4>
+                    <p><strong>IRCTC (Good Model):</strong> Government monopoly + recurring train bookings + growing travel market = sustainable business model</p>
+                    <p><strong>Paytm (Questionable Model):</strong> Multiple revenue streams but struggling with profitability despite huge scale</p>
+                </div>
+                `
+            },
+            {
+                title: "Financials",
+                content: `
+                <h2>Financials</h2>
+                
+                <h3>What is it?</h3>
+                <p>The financial section is like the company's "report card" for the past 3-5 years. It shows revenue (income), expenses (costs), and profit (what's left after expenses).</p>
+
+                <h3>Key Numbers to Focus On:</h3>
+
+                <h4>Revenue Growth</h4>
+                <ul>
+                    <li><strong>What it means:</strong> How much money the company is bringing in each year</li>
+                    <li><strong>What to look for:</strong> Consistent growth of 15-25% annually is excellent</li>
+                    <li><strong>Warning signs:</strong> Declining or highly volatile revenue</li>
+                </ul>
+
+                <h4>Profitability</h4>
+                <ul>
+                    <li><strong>Gross Profit Margin:</strong> Revenue minus direct costs (should be improving or stable)</li>
+                    <li><strong>Operating Profit:</strong> After all business expenses (should be positive or improving)</li>
+                    <li><strong>Net Profit:</strong> Final profit after taxes and interest</li>
+                </ul>
+
+                <h4>Cash Flow</h4>
+                <ul>
+                    <li><strong>Operating Cash Flow:</strong> Cash generated from business operations</li>
+                    <li><strong>Free Cash Flow:</strong> Cash left after necessary investments</li>
+                    <li><strong>Why it matters:</strong> Companies can manipulate profits, but cash is harder to fake</li>
+                </ul>
+
+                <h4>Debt Levels</h4>
+                <ul>
+                    <li><strong>Debt-to-Equity Ratio:</strong> How much debt compared to owner's money</li>
+                    <li><strong>Interest Coverage:</strong> Can the company easily pay interest on its debt?</li>
+                </ul>
+
+                <div class="checklist">
+                    <h4>Simple Questions to Ask:</h4>
+                    <ol>
+                        <li>Is the company making money (profitable)?</li>
+                        <li>Is revenue growing consistently?</li>
+                        <li>Are profit margins stable or improving?</li>
+                        <li>Does the company generate positive cash flow?</li>
+                        <li>Can it pay its debts comfortably?</li>
+                    </ol>
+                </div>
+
+                <div class="red-flag">
+                    <h4>Financial Red Flags:</h4>
+                    <ul>
+                        <li>Losses for more than 3 consecutive years</li>
+                        <li>Declining revenue</li>
+                        <li>Negative cash flow from operations</li>
+                        <li>Debt growing faster than revenue</li>
+                        <li>Dependence on loans to fund operations</li>
+                    </ul>
+                </div>
+                `
+            },
+            {
+                title: "Risk Factors",
+                content: `
+                <h2>Risk Factors</h2>
+                
+                <h3>What is it?</h3>
+                <p>This section lists everything that could go wrong with the business. Think of it as the company's "worry list" - what keeps management awake at night.</p>
+
+                <h3>Why companies include risks:</h3>
+                <ul>
+                    <li><strong>Legal requirement (SEBI):</strong> They must disclose potential problems</li>
+                    <li><strong>Investor protection:</strong> So you can't sue them later saying "you didn't tell us"</li>
+                    <li><strong>Transparency:</strong> Shows management understands their challenges</li>
+                </ul>
+
+                <h3>How to Analyze Risk Factors:</h3>
+
+                <div class="red-flag">
+                    <h4>🔴 Serious Red Flags:</h4>
+                    <ul>
+                        <li><strong>Vague risks:</strong> "General economic conditions may affect us" (too generic)</li>
+                        <li><strong>Regulatory risks:</strong> Business depends on government permissions that could change</li>
+                        <li><strong>Technology disruption:</strong> Risk of becoming obsolete (like Kodak with digital cameras)</li>
+                        <li><strong>Customer concentration:</strong> Risk if major customers leave</li>
+                        <li><strong>Currency/commodity risks:</strong> Profits affected by exchange rates or raw material prices</li>
+                    </ul>
+                </div>
+
+                <div class="yellow-flag">
+                    <h4>🟡 Moderate Concerns:</h4>
+                    <ul>
+                        <li><strong>Competition risks:</strong> New players entering the market</li>
+                        <li><strong>Economic sensitivity:</strong> Business affected by economic cycles</li>
+                        <li><strong>Seasonal variations:</strong> Revenue varies by season</li>
+                    </ul>
+                </div>
+
+                <div class="green-flag">
+                    <h4>🟢 Manageable Risks:</h4>
+                    <ul>
+                        <li><strong>Standard business risks:</strong> Normal operational challenges</li>
+                        <li><strong>Specific mitigation mentioned:</strong> Company explains how they handle each risk</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>Practical Tip:</h4>
+                    <p>If the risk section is longer than the business description, be very careful. If risks are too vague or generic, it suggests management isn't being honest about real challenges.</p>
+                </div>
+                `
+            },
+            {
+                title: "Use of Funds",
+                content: `
+                <h2>Use of Funds</h2>
+                
+                <h3>What is it?</h3>
+                <p>This section explains what the company will do with the money raised from the IPO. It's like asking your friend what they'll do with the money you're lending them.</p>
+
+                <h3>Why it's crucial:</h3>
+                <ul>
+                    <li>Shows management's priorities</li>
+                    <li>Indicates if they have a clear growth plan</li>
+                    <li>Reveals if promoters are cashing out</li>
+                </ul>
+
+                <div class="green-flag">
+                    <h4>🟢 Green Flag Uses:</h4>
+                    <ol>
+                        <li><strong>Business expansion:</strong> Opening new locations, entering new markets</li>
+                        <li><strong>Technology upgrades:</strong> Improving systems and capabilities</li>
+                        <li><strong>Debt repayment:</strong> Reducing financial burden</li>
+                        <li><strong>Working capital:</strong> Funding day-to-day operations for growth</li>
+                        <li><strong>Research & Development:</strong> Investing in future products/services</li>
+                    </ol>
+                </div>
+
+                <div class="red-flag">
+                    <h4>🔴 Red Flag Uses:</h4>
+                    <ol>
+                        <li><strong>General corporate purposes:</strong> Too vague - what exactly?</li>
+                        <li><strong>Promoter selling:</strong> Original owners cashing out their shares</li>
+                        <li><strong>Related party transactions:</strong> Money going to promoter's other businesses</li>
+                        <li><strong>Luxury purchases:</strong> Expensive offices, cars, or lifestyle expenses</li>
+                        <li><strong>Acquisitions:</strong> Buying other companies without clear rationale</li>
+                    </ol>
+                </div>
+
+                <div class="info-box">
+                    <h4>Real Examples:</h4>
+                    <p><strong>Good:</strong> "₹500 crores for setting up 200 new retail stores"</p>
+                    <p><strong>Bad:</strong> "₹500 crores for general corporate purposes"</p>
+                </div>
+
+                <div class="checklist">
+                    <h4>Questions to Ask:</h4>
+                    <ul>
+                        <li>Will this use of funds help the company grow?</li>
+                        <li>Are the amounts reasonable for stated purposes?</li>
+                        <li>Is the timeline realistic?</li>
+                        <li>Will shareholders benefit from this use of money?</li>
+                    </ul>
+                </div>
+                `
+            },
+            {
+                title: "Management Team",
+                content: `
+                <h2>Management Team</h2>
+                
+                <h3>What is it?</h3>
+                <p>Information about the people running the company - their background, experience, and track record. You're essentially evaluating the "drivers" of the business vehicle you're investing in.</p>
+
+                <h3>Why it matters:</h3>
+                <ul>
+                    <li><strong>Track record:</strong> Have they built successful businesses before?</li>
+                    <li><strong>Industry experience:</strong> Do they understand this specific business?</li>
+                    <li><strong>Integrity:</strong> Any history of fraud or regulatory issues?</li>
+                    <li><strong>Alignment:</strong> Are their interests aligned with shareholders?</li>
+                </ul>
+
+                <div class="green-flag">
+                    <h4>🟢 Strong Management Indicators:</h4>
+                    <ul>
+                        <li><strong>Relevant experience:</strong> 10+ years in the same industry</li>
+                        <li><strong>Previous success:</strong> Built and scaled businesses before</li>
+                        <li><strong>Educational background:</strong> Strong academic or professional qualifications</li>
+                        <li><strong>Skin in the game:</strong> Management owns significant stake in company</li>
+                        <li><strong>Clear succession planning:</strong> Not dependent on one person</li>
+                    </ul>
+                </div>
+
+                <div class="red-flag">
+                    <h4>🔴 Management Red Flags:</h4>
+                    <ul>
+                        <li><strong>Frequent job changes:</strong> Different industries every 2-3 years</li>
+                        <li><strong>Legal troubles:</strong> Past cases of fraud, regulatory violations</li>
+                        <li><strong>Related party transactions:</strong> Doing business with family/friends</li>
+                        <li><strong>Excessive compensation:</strong> Paying themselves too much relative to company size</li>
+                        <li><strong>Poor communication:</strong> Unable to clearly explain business strategy</li>
+                    </ul>
+                </div>
+
+                <h3>Key People to Evaluate:</h3>
+                <ol>
+                    <li><strong>CEO/Managing Director:</strong> Overall strategy and execution</li>
+                    <li><strong>CFO:</strong> Financial management and reporting</li>
+                    <li><strong>Independent Directors:</strong> Provide oversight and governance</li>
+                    <li><strong>Promoters:</strong> Original founders/owners</li>
+                </ol>
+
+                <div class="checklist">
+                    <h4>Questions to Ask:</h4>
+                    <ul>
+                        <li>Would you hire these people to run your family business?</li>
+                        <li>Do they have relevant experience for this industry?</li>
+                        <li>Are they committed long-term or looking for quick exit?</li>
+                        <li>How much of their personal wealth is invested in this company?</li>
+                    </ul>
+                </div>
+                `
+            },
+            {
+                title: "Ownership Structure",
+                content: `
+                <h2>Ownership Structure</h2>
+                
+                <h3>What is it?</h3>
+                <p>Shows who owns how much of the company before and after the IPO. It's like understanding who are the other "partners" in the business you're investing in.</p>
+
+                <h3>Key Components:</h3>
+
+                <h4>Before IPO:</h4>
+                <ul>
+                    <li><strong>Promoters:</strong> Original founders/owners</li>
+                    <li><strong>Employees:</strong> Stock options for staff</li>
+                    <li><strong>Investors:</strong> VCs, PEs, other institutional investors</li>
+                    <li><strong>Others:</strong> Strategic partners, government, etc.</li>
+                </ul>
+
+                <h4>After IPO:</h4>
+                <ul>
+                    <li><strong>Public shareholders:</strong> General investors like you</li>
+                    <li><strong>Retained ownership:</strong> How much promoters keep</li>
+                </ul>
+
+                <div class="green-flag">
+                    <h4>🟢 Healthy Ownership Structure:</h4>
+                    <ul>
+                        <li><strong>Promoter stake 40-60%:</strong> Shows commitment but allows public participation</li>
+                        <li><strong>Strong institutional investors:</strong> Reputable VCs/PEs have invested</li>
+                        <li><strong>Employee ownership:</strong> Team has stake in success</li>
+                        <li><strong>Reasonable public float:</strong> At least 25% available to public</li>
+                    </ul>
+                </div>
+
+                <div class="red-flag">
+                    <h4>🔴 Concerning Ownership Patterns:</h4>
+                    <ul>
+                        <li><strong>Promoters selling majority stake:</strong> Shows lack of confidence</li>
+                        <li><strong>Complex ownership structures:</strong> Multiple layers, offshore entities</li>
+                        <li><strong>Related party shareholding:</strong> Family members, friends holding significant stakes</li>
+                        <li><strong>Recent changes:</strong> Major ownership changes just before IPO</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>What Ownership Tells You:</h4>
+                    <ul>
+                        <li><strong>Promoter commitment:</strong> Higher stake = more aligned with shareholders</li>
+                        <li><strong>Control structure:</strong> Who makes key decisions?</li>
+                        <li><strong>Future dilution:</strong> Will your stake get diluted by employee stock options?</li>
+                        <li><strong>Exit strategy:</strong> Are early investors planning to sell after listing?</li>
+                    </ul>
+                </div>
+                `
+            },
+            {
+                title: "Valuation",
+                content: `
+                <h2>Valuation</h2>
+                
+                <h3>What is it?</h3>
+                <p>The price at which the company is being valued in the market. It's like determining if a house is worth the asking price by comparing it with similar houses in the neighborhood.</p>
+
+                <h3>Key Valuation Metrics:</h3>
+
+                <h4>Price-to-Earnings (P/E) Ratio:</h4>
+                <ul>
+                    <li><strong>Formula:</strong> Market Price ÷ Earnings Per Share</li>
+                    <li><strong>What it means:</strong> How many years of current earnings you're paying for</li>
+                    <li><strong>Benchmark:</strong> Compare with industry average and competitors</li>
+                    <li><strong>Example:</strong> If P/E is 20, you're paying for 20 years of current earnings</li>
+                </ul>
+
+                <h4>Price-to-Sales (P/S) Ratio:</h4>
+                <ul>
+                    <li><strong>When to use:</strong> For companies with low or no profits</li>
+                    <li><strong>Formula:</strong> Market Cap ÷ Annual Revenue</li>
+                    <li><strong>What it tells:</strong> Premium you're paying for each rupee of sales</li>
+                </ul>
+
+                <h4>Price-to-Book (P/B) Ratio:</h4>
+                <ul>
+                    <li><strong>Formula:</strong> Market Price ÷ Book Value Per Share</li>
+                    <li><strong>Useful for:</strong> Asset-heavy businesses like real estate, manufacturing</li>
+                    <li><strong>Interpretation:</strong> How much above asset value you're paying</li>
+                </ul>
+
+                <div class="green-flag">
+                    <h4>🟢 Reasonable Valuation:</h4>
+                    <ul>
+                        <li>P/E ratio similar to or lower than industry peers</li>
+                        <li>Growth rate justifies the premium</li>
+                        <li>Strong fundamentals support the valuation</li>
+                        <li>Comparable companies trading at similar multiples</li>
+                    </ul>
+                </div>
+
+                <div class="red-flag">
+                    <h4>🔴 Overvaluation Warning Signs:</h4>
+                    <ul>
+                        <li>P/E ratio 2x or more than industry average</li>
+                        <li>No profits but very high P/S ratio</li>
+                        <li>Valuation based on future promises, not current performance</li>
+                        <li>Management unable to justify the valuation</li>
+                    </ul>
+                </div>
+
+                <div class="checklist">
+                    <h4>Practical Valuation Tips:</h4>
+                    <ol>
+                        <li><strong>Compare with peers:</strong> Look at similar companies' valuations</li>
+                        <li><strong>Growth vs. price:</strong> High growth can justify higher P/E</li>
+                        <li><strong>Quality premium:</strong> Better companies deserve higher valuations</li>
+                        <li><strong>Market conditions:</strong> Bull markets tend to have higher valuations</li>
+                        <li><strong>Entry point:</strong> Even good companies can be bad investments at wrong price</li>
+                    </ol>
+                </div>
+                `
+            },
+            {
+                title: "Additional Critical Aspects",
+                content: `
+                <h2>Additional Critical Aspects</h2>
+                
+                <h3>1. Competitive Landscape</h3>
+                <h4>What to analyze:</h4>
+                <ul>
+                    <li><strong>Market size:</strong> How big is the total market?</li>
+                    <li><strong>Market share:</strong> What percentage does this company have?</li>
+                    <li><strong>Competitive advantages:</strong> What makes them different/better?</li>
+                    <li><strong>Barriers to entry:</strong> How difficult is it for new players to enter?</li>
+                </ul>
+
+                <h4>Questions to ask:</h4>
+                <ul>
+                    <li>Is the market growing or shrinking?</li>
+                    <li>Who are the main competitors?</li>
+                    <li>What happens if a big player (like Amazon or Reliance) enters this space?</li>
+                    <li>Does the company have sustainable competitive advantages?</li>
+                </ul>
+
+                <h3>2. Industry Trends</h3>
+                <h4>Key considerations:</h4>
+                <ul>
+                    <li><strong>Growth trajectory:</strong> Is the industry expanding?</li>
+                    <li><strong>Technology impact:</strong> Will digital disruption affect this business?</li>
+                    <li><strong>Regulatory environment:</strong> Government policies favorable or hostile?</li>
+                    <li><strong>Cyclical nature:</strong> Does the industry go through ups and downs?</li>
+                </ul>
+
+                <h3>3. Corporate Governance</h3>
+                <h4>What to check:</h4>
+                <ul>
+                    <li><strong>Board composition:</strong> Independent directors vs. promoter nominees</li>
+                    <li><strong>Audit quality:</strong> Reputable auditing firm</li>
+                    <li><strong>Transparency:</strong> Clear and detailed disclosures</li>
+                    <li><strong>Related party transactions:</strong> Business dealings with promoter entities</li>
+                </ul>
+
+                <div class="red-flag">
+                    <h4>Governance Red flags:</h4>
+                    <ul>
+                        <li>Majority of board members related to promoters</li>
+                        <li>Frequent auditor changes</li>
+                        <li>Large unexplained related party transactions</li>
+                        <li>Poor disclosure practices</li>
+                    </ul>
+                </div>
+
+                <h3>4. Legal and Regulatory Issues</h3>
+                <h4>Important aspects:</h4>
+                <ul>
+                    <li><strong>Pending litigation:</strong> Major lawsuits that could affect business</li>
+                    <li><strong>Regulatory compliance:</strong> All licenses and approvals in place</li>
+                    <li><strong>Tax disputes:</strong> Outstanding issues with tax authorities</li>
+                    <li><strong>Environmental clearances:</strong> Especially for manufacturing companies</li>
+                </ul>
+
+                <h3>5. Subscription and Allotment Process</h3>
+                <h4>Key details:</h4>
+                <ul>
+                    <li><strong>Issue size:</strong> Total amount being raised</li>
+                    <li><strong>Price band:</strong> Minimum and maximum price</li>
+                    <li><strong>Lot size:</strong> Minimum investment required</li>
+                    <li><strong>Reservation:</strong> Quota for retail, HNI, and institutional investors</li>
+                    <li><strong>Listing timeline:</strong> When will shares start trading</li>
+                </ul>
+                `
+            },
+            {
+                title: "Red vs Green Flags",
+                content: `
+                <h2>Red Flags vs Green Flags</h2>
+                
+                <div class="red-flag">
+                    <h3>🔴 Major Red Flags (Avoid Investment):</h3>
+
+                    <h4>1. Financial Red Flags:</h4>
+                    <ul>
+                        <li>Consistent losses for 3+ years</li>
+                        <li>Declining revenue trends</li>
+                        <li>Negative operating cash flows</li>
+                        <li>Very high debt levels</li>
+                    </ul>
+
+                    <h4>2. Business Red Flags:</h4>
+                    <ul>
+                        <li>Unclear or complex business model</li>
+                        <li>Heavy dependence on few customers/suppliers</li>
+                        <li>Regulatory risks that could shut down business</li>
+                        <li>Declining industry with no turnaround plan</li>
+                    </ul>
+
+                    <h4>3. Management Red Flags:</h4>
+                    <ul>
+                        <li>History of corporate governance issues</li>
+                        <li>Excessive related party transactions</li>
+                        <li>Management selling majority stake</li>
+                        <li>Poor track record in previous ventures</li>
+                    </ul>
+
+                    <h4>4. Valuation Red Flags:</h4>
+                    <ul>
+                        <li>Extremely high valuations vs. peers</li>
+                        <li>No clear path to profitability</li>
+                        <li>Valuation based on unrealistic assumptions</li>
+                    </ul>
+                </div>
+
+                <div class="green-flag">
+                    <h3>🟢 Strong Green Flags (Consider Investment):</h3>
+
+                    <h4>1. Financial Green Flags:</h4>
+                    <ul>
+                        <li>Consistent profitability and growth</li>
+                        <li>Strong cash flow generation</li>
+                        <li>Healthy balance sheet with manageable debt</li>
+                        <li>Improving profit margins</li>
+                    </ul>
+
+                    <h4>2. Business Green Flags:</h4>
+                    <ul>
+                        <li>Clear, scalable business model</li>
+                        <li>Strong competitive advantages</li>
+                        <li>Growing market with good positioning</li>
+                        <li>Diversified customer and supplier base</li>
+                    </ul>
+
+                    <h4>3. Management Green Flags:</h4>
+                    <ul>
+                        <li>Experienced team with relevant background</li>
+                        <li>Strong corporate governance practices</li>
+                        <li>Promoters retaining significant stake</li>
+                        <li>Clear long-term strategy</li>
+                    </ul>
+
+                    <h4>4. Valuation Green Flags:</h4>
+                    <ul>
+                        <li>Reasonable valuation vs. growth prospects</li>
+                        <li>Trading below or in line with peers</li>
+                        <li>Strong fundamentals justify the price</li>
+                    </ul>
+                </div>
+                `
+            },
+            {
+                title: "Investment Decision Framework",
+                content: `
+                <h2>Investment Decision Framework</h2>
+                
+                <h3>Step 1: Initial Screening (5 minutes)</h3>
+                <ul>
+                    <li>Read the company summary and business description</li>
+                    <li>Check if you understand the business model</li>
+                    <li>Look at basic financials: revenue growth and profitability</li>
+                    <li>If it passes, move to detailed analysis</li>
+                </ul>
+
+                <h3>Step 2: Detailed Analysis (30 minutes)</h3>
+                <ul>
+                    <li>Analyze each section mentioned above</li>
+                    <li>Compare with 2-3 competitors</li>
+                    <li>List all red flags and green flags</li>
+                    <li>Assess risk vs. reward potential</li>
+                </ul>
+
+                <div class="checklist">
+                    <h3>Step 3: Decision Matrix</h3>
+                    <p>Rate each aspect on a scale of 1-5:</p>
+                    <ul>
+                        <li>Business Model: ___/5</li>
+                        <li>Financials: ___/5</li>
+                        <li>Management: ___/5</li>
+                        <li>Valuation: ___/5</li>
+                        <li>Industry Prospects: ___/5</li>
+                        <li>Risk Level: ___/5 (5 = low risk)</li>
+                    </ul>
+                    <p><strong>Total Score: ___/30</strong></p>
+
+                    <h4>Investment Decision:</h4>
+                    <ul>
+                        <li><strong>24-30:</strong> Strong investment candidate</li>
+                        <li><strong>18-23:</strong> Moderate investment - proceed with caution</li>
+                        <li><strong>12-17:</strong> Weak investment - better opportunities elsewhere</li>
+                        <li><strong>Below 12:</strong> Avoid investment</li>
+                    </ul>
+                </div>
+
+                <h3>Step 4: Portfolio Allocation</h3>
+                <p>Even for good IPOs, consider:</p>
+                <ul>
+                    <li><strong>Maximum 5-10%</strong> of portfolio in single IPO</li>
+                    <li><strong>Diversification</strong> across industries and company sizes</li>
+                    <li><strong>Long-term perspective</strong> - minimum 3-5 years holding period</li>
+                    <li><strong>Exit strategy</strong> - when will you sell?</li>
+                </ul>
+
+                <div class="info-box">
+                    <h3>Final Checklist Before Investing</h3>
+                    <h4>Questions to Ask Yourself:</h4>
+                    <ol>
+                        <li><strong>Understanding:</strong> Do I fully understand how this company makes money?</li>
+                        <li><strong>Growth:</strong> Is the company and its industry growing?</li>
+                        <li><strong>Competition:</strong> Does the company have sustainable competitive advantages?</li>
+                        <li><strong>Management:</strong> Would I trust these people with my money?</li>
+                        <li><strong>Price:</strong> Am I paying a reasonable price for this business?</li>
+                        <li><strong>Risk:</strong> Can I afford to lose this money if things go wrong?</li>
+                        <li><strong>Time horizon:</strong> Am I prepared to hold this investment for 3-5 years?</li>
+                        <li><strong>Portfolio fit:</strong> How does this investment fit my overall portfolio?</li>
+                    </ol>
+                </div>
+
+                <div class="yellow-flag">
+                    <h3>Remember:</h3>
+                    <ul>
+                        <li><strong>No investment is risk-free</strong>, including IPOs</li>
+                        <li><strong>Past performance doesn't guarantee future results</strong></li>
+                        <li><strong>Diversification is key</strong> - don't put all eggs in one basket</li>
+                        <li><strong>When in doubt, consult a qualified financial advisor</strong></li>
+                    </ul>
+                </div>
+
+                <p style="margin-top: 30px; font-style: italic; color: #666;">
+                    <em>This toolkit is designed for educational purposes and should not be considered as personalized investment advice. Always consult with qualified financial professionals before making investment decisions.</em>
+                </p>
+                `
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let score = 0;
+        let currentToolkitSection = 0;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('question-screen').classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `<span class="option-label">${String.fromCharCode(65 + index)})</span> ${option}`;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = currentQuestion === questions.length - 1 ? 'Finish' : 'Next';
+
+            // Restore selected answer if exists
+            if (userAnswers[currentQuestion] !== undefined) {
+                selectOption(userAnswers[currentQuestion]);
+            }
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => option.classList.remove('selected'));
+            options[index].classList.add('selected');
+            userAnswers[currentQuestion] = index;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            score = 0;
+            for (let i = 0; i < questions.length; i++) {
+                if (userAnswers[i] === questions[i].correct) {
+                    score++;
+                }
+            }
+
+            document.getElementById('question-screen').classList.remove('active');
+            document.getElementById('summary-screen').classList.add('active');
+
+            const finalScore = document.getElementById('final-score');
+            finalScore.textContent = `${score}/${questions.length}`;
+
+            // Add score styling
+            const percentage = (score / questions.length) * 100;
+            if (percentage >= 90) {
+                finalScore.className = 'score excellent';
+            } else if (percentage >= 70) {
+                finalScore.className = 'score good';
+            } else if (percentage >= 50) {
+                finalScore.className = 'score average';
+            } else {
+                finalScore.className = 'score poor';
+            }
+
+            // Score message
+            let message = '';
+            if (percentage >= 90) {
+                message = 'Excellent! You have mastered IPO analysis concepts.';
+            } else if (percentage >= 70) {
+                message = 'Great job! You have a solid understanding of IPO analysis.';
+            } else if (percentage >= 50) {
+                message = 'Good effort! Consider reviewing the key concepts.';
+            } else {
+                message = 'Keep learning! Review the fundamentals of IPO analysis.';
+            }
+            document.getElementById('score-message').textContent = message;
+
+            // Show detailed answers
+            showDetailedAnswers();
+        }
+
+        function showDetailedAnswers() {
+            const reviewContainer = document.getElementById('answers-review');
+            reviewContainer.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const answerItem = document.createElement('div');
+                const isCorrect = userAnswers[index] === question.correct;
+                answerItem.className = `answer-item ${isCorrect ? 'correct' : 'incorrect'}`;
+
+                const userAnswerText = userAnswers[index] !== undefined ? 
+                    `${String.fromCharCode(65 + userAnswers[index])}) ${question.options[userAnswers[index]]}` : 
+                    'No answer selected';
+
+                answerItem.innerHTML = `
+                    <div class="answer-question">${index + 1}. ${question.question}</div>
+                    <div class="answer-details">
+                        <div class="correct-answer">Correct: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</div>
+                        ${!isCorrect ? `<div class="user-answer">Your answer: ${userAnswerText}</div>` : ''}
+                    </div>
+                `;
+                reviewContainer.appendChild(answerItem);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            score = 0;
+            document.getElementById('summary-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function showToolkitMenu() {
+            document.getElementById('summary-screen').classList.remove('active');
+            document.getElementById('toolkit-content-screen').classList.remove('active');
+            document.getElementById('toolkit-menu-screen').classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function backToQuizResults() {
+            document.getElementById('toolkit-menu-screen').classList.remove('active');
+            document.getElementById('toolkit-content-screen').classList.remove('active');
+            document.getElementById('summary-screen').classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function showToolkitSection(sectionIndex) {
+            currentToolkitSection = sectionIndex;
+            
+            // Hide menu and show content
+            document.getElementById('toolkit-menu-screen').classList.remove('active');
+            document.getElementById('toolkit-content-screen').classList.add('active');
+            
+            // Show sidebar
+            document.getElementById('sidebar').classList.add('active');
+            
+            // Update sidebar active item
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach((item, index) => {
+                if (index === sectionIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Load content
+            document.getElementById('toolkit-content').innerHTML = toolkitSections[sectionIndex].content;
+            
+            // Update navigation buttons
+            document.getElementById('toolkit-prev').style.display = sectionIndex === 0 ? 'none' : 'inline-block';
+            document.getElementById('toolkit-next').style.display = sectionIndex === toolkitSections.length - 1 ? 'none' : 'inline-block';
+        }
+
+        function previousToolkitSection() {
+            if (currentToolkitSection > 0) {
+                showToolkitSection(currentToolkitSection - 1);
+            }
+        }
+
+        function nextToolkitSection() {
+            if (currentToolkitSection < toolkitSections.length - 1) {
+                showToolkitSection(currentToolkitSection + 1);
+            }
+        }
+    </script>
+</body>
+</html>
